@@ -1,12 +1,32 @@
+import { projectsList } from "../logic/createProjectsLogic";
+
 export const todoListController = () => {
     const todoSection = document.createElement('section');
-    todoSection.setAttribute('id', 'todo-list');
-    const divHeader = `
-        <div>
-            <h2>Default</h2>
-            <button>Create New Todo</button>
-        </div>
-    `
+    const main = document.querySelector('main');
+    let projectsInputs = [];
+
+   function updateInputs() {
+       projectsInputs = document.querySelectorAll('input[name="project"]');
+       projectsInputs.forEach(input => input.addEventListener('change', updateSelectedInput));
+    }
+    
+    function updateSelectedInput() {
+        todoSection.innerHTML = '';
+        projectsInputs.forEach(input => {
+            if (input.checked) {
+                todoSection.setAttribute('id', 'todo-list');
+                const divHeader = document.createElement('div');
+                const h2Header = document.createElement('h2');
+                h2Header.textContent = input.value;
+                const buttonHeader = document.createElement('button');
+                buttonHeader.textContent = 'Create New Todo';
+                divHeader.appendChild(h2Header);
+                divHeader.appendChild(buttonHeader);
+                todoSection.appendChild(divHeader);
+            }
+        });
+        main.appendChild(todoSection);
+    }
   
     const todosDiv = document.createElement('div');
 
@@ -21,8 +41,7 @@ export const todoListController = () => {
         </div>
     `
 
-    todoSection.innerHTML += divHeader;
-    todoSection.appendChild(todosDiv);
+    // todoSection.appendChild(todosDiv);
     
-    return todoSection;
+    return { todoSection, updateInputs, updateSelectedInput };
   }

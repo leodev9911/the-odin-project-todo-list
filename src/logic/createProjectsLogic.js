@@ -1,3 +1,4 @@
+import { todoListController } from "../display-controller/todoList";
 import { updateProjectsSection } from "../display-controller/todoProjects";
 
 const projectsList = [];
@@ -5,6 +6,8 @@ const projectsList = [];
 function createNewTodo() {
 
 }
+
+// const { updateInputs } = todoListController();
 
 function createNewProject(name) {
     const projectName = name;

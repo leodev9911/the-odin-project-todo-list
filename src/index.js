@@ -4,7 +4,7 @@ import { todoProjectsController, updateProjectsSection } from "./display-control
 const main = document.querySelector('main');
 
 const { projectsSection } = todoProjectsController();
-const todoSection = todoListController();
+const { todoSection } = todoListController();
 
 main.appendChild(projectsSection);
 main.appendChild(todoSection);

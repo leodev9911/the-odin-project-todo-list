@@ -1,6 +1,8 @@
 import { projectsList,  onCreateNewProject } from "../logic/createProjectsLogic";
+import { todoListController } from "./todoList";
 
 export const todoProjectsController = () => {
+  const { updateInputs } = todoListController();
   const projectsSection = document.createElement('section');
   projectsSection.setAttribute('id', 'todo-projects');
 
@@ -26,6 +28,7 @@ export const todoProjectsController = () => {
   newProjectSubmit.addEventListener('click', () => {
     onCreateNewProject(projectInput.value);
     createNewProjectForm.style.display = 'none';
+    updateInputs();
     projectInput.value = '';
   });
 
@@ -45,6 +48,7 @@ export const todoProjectsController = () => {
 
 export function updateProjectsSection() {
   const { projectsSection } = todoProjectsController();
+  const { updateInputs, updateSelectedInput } = todoListController();
 
   const ulProjectsList = document.getElementById('project-list');
   if (projectsList.length === 0) {
@@ -62,6 +66,7 @@ export function updateProjectsSection() {
           input.setAttribute('type', 'radio');
           input.setAttribute('id', `${projectName.toLowerCase().split(' ').join('-')}-project`);
           input.setAttribute('name', 'project');
+          input.setAttribute('value', projectName);
           // input.setAttribute('checked', 'checked');
 
 
@@ -80,6 +85,8 @@ export function updateProjectsSection() {
           editProjectSubmit.addEventListener('click', () => {
             editProject(index, projectInput.value);
             editProjectForm.style.display = 'none';
+            updateInputs();
+            updateSelectedInput();
             projectInput.value = '';
           });
 
@@ -93,7 +100,11 @@ export function updateProjectsSection() {
           editButton.textContent = 'Edit';
           deleteButton.textContent = 'Delete';
           editButton.addEventListener('click', () => editProjectForm.style.display = 'block');
-          deleteButton.addEventListener('click', () => deleteProject(index));
+          deleteButton.addEventListener('click', () => {
+            deleteProject(index);
+            updateInputs();
+            updateSelectedInput();
+          });
               
           listItem.appendChild(labelInput);
           listItem.appendChild(input);
