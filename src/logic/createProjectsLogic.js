@@ -1,13 +1,31 @@
-import { todoListController } from "../display-controller/todoList";
 import { updateProjectsSection } from "../display-controller/todoProjects";
+import { updateInputs, updateSelectedInput } from "../display-controller/todoList";
 
 const projectsList = [];
+let inputToEdit = {};
+let inputChecked;
+
+const checkIfInputChecked = () => {
+    const projectsInputs = document.querySelectorAll('input[name="project"]');
+    console.log(projectsInputs);
+    projectsInputs.forEach(input => {
+       if (input.checked) {
+        inputChecked = input.value;
+       };
+    });
+}
+
+const checkIfEditedInputIsChecked = (index, name) => {
+    const projectsInputs = document.querySelectorAll('input[name="project"]');
+    inputToEdit = {
+        projectName: name,
+        checked: projectsInputs[index].checked
+    };
+}
 
 function createNewTodo() {
 
 }
-
-// const { updateInputs } = todoListController();
 
 function createNewProject(name) {
     const projectName = name;
@@ -15,11 +33,19 @@ function createNewProject(name) {
 
     const editProject = (index, newName) => {
         projectsList[index].projectName = newName;
+        checkIfEditedInputIsChecked(index, newName);
+        checkIfInputChecked();
         updateProjectsSection();
+        updateInputs();
+        updateSelectedInput();
+        inputToEdit = {};
+        inputChecked = null;
     }
     const deleteProject = (index) => {
         projectsList.splice(index, 1);
+        checkIfInputChecked();
         updateProjectsSection();
+        inputChecked = null;
     }
     const createTodo = () =>  todoProjectList.push(createNewTodo());
     
@@ -28,7 +54,9 @@ function createNewProject(name) {
 
 function onCreateNewProject(name) {
     projectsList.push(createNewProject(name));
+    checkIfInputChecked();
     updateProjectsSection();
+    inputChecked = null;
 }
 
-export { projectsList, onCreateNewProject };
+export { projectsList, onCreateNewProject, inputToEdit, inputChecked };
