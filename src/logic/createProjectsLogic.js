@@ -4,6 +4,7 @@ import { updateInputs, updateSelectedInput, updateTodosDiv } from "../display-co
 const projectsList = [];
 let inputToEdit = {};
 let inputChecked;
+let isForEdit = false;
 const date = new Date();
 
 const onCreateNewTodo = (selectedProject, titleInput, descriptionInput) => {
@@ -50,7 +51,11 @@ function createNewTodo({
         updateTodosDiv();
     }
 
-    const onEdit = () => {}
+    const onEdit = (projectIndex ,index, titleinput, todoDescription) => {
+        projectsList[projectIndex].todoProjectList[index].todoTitle = titleinput;
+        projectsList[projectIndex].todoProjectList[index].todoDescription = todoDescription;
+        updateTodosDiv();
+    }
 
     const onDelete = (index, projectIndex) => {
         projectsList[projectIndex].todoProjectList.splice(projectsList[projectIndex].todoProjectList[index], 1);
@@ -115,5 +120,6 @@ export {
     onCreateNewProject,
     onCreateNewTodo, 
     inputToEdit, 
-    inputChecked 
+    inputChecked,
+    isForEdit,
 };

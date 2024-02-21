@@ -1,10 +1,16 @@
-import { projectsList, onCreateNewTodo } from "../logic/createProjectsLogic";
+import { 
+    projectsList, 
+    onCreateNewTodo,
+    isForEdit,
+} from "../logic/createProjectsLogic";
 
 const main = document.querySelector('main');
 const todoSection = document.createElement('section');
 todoSection.setAttribute('id', 'todo-list');
 main.appendChild(todoSection);
 let projectsInputs = [];
+let projectIndex;
+let inputToEditindex;
 
 function updateInputs() {
     projectsInputs = document.querySelectorAll('input[name="project"]');
@@ -14,7 +20,7 @@ function updateInputs() {
     }));
 }
 
-const showCreateTodoInput = () => {
+const showCreateAndEditTodoInput = () => {
     const todoListSection = document.getElementById('todo-list');
     const projectInputsArray = Array.from(projectsInputs);
     const selectedInput = projectInputsArray.find(input => input.checked === true);
@@ -31,19 +37,31 @@ const showCreateTodoInput = () => {
     descriptionInputLabel.setAttribute('for', 'todo-description');
     const descriptioninput = document.createElement('textarea');
     descriptioninput.setAttribute('id', 'todo-description');
-    const createNewTodoButton = document.createElement('button');
-    createNewTodoButton.textContent = 'Submit';
-    createNewTodoButton.setAttribute('type', 'button');
-    createNewTodoButton.addEventListener('click', () => {
-        todoListSection.removeChild(createTodoForm);
-        onCreateNewTodo(selectedProject, titleinput, descriptioninput);
-    });
+    const createOrEditNewTodoButton = document.createElement('button');
+    createOrEditNewTodoButton.textContent = isForEdit ? 'Edit' : 'Create';
+    createOrEditNewTodoButton.setAttribute('type', 'button');
+    
+    
+    if (isForEdit) {
+        createOrEditNewTodoButton.addEventListener('click', () => {
+            console.log(titleinput.value);
+            console.log(descriptioninput.value);
+            projectsList[projectIndex].todoProjectList[inputToEditindex].onEdit(projectIndex, inputToEditindex, titleinput.value, descriptioninput.value);
+            isForEdit = false;
+            todoListSection.removeChild(createTodoForm);
+        })
+    } else {
+        createOrEditNewTodoButton.addEventListener('click', () => {
+            todoListSection.removeChild(createTodoForm);
+            onCreateNewTodo(selectedProject, titleinput, descriptioninput);
+        });
+    }
 
     createTodoForm.appendChild(titleInputLabel);
     createTodoForm.appendChild(titleinput);
     createTodoForm.appendChild(descriptionInputLabel);
     createTodoForm.appendChild(descriptioninput);
-    createTodoForm.appendChild(createNewTodoButton);
+    createTodoForm.appendChild(createOrEditNewTodoButton);
     todoListSection.appendChild(createTodoForm);
 }
 
@@ -60,7 +78,7 @@ function updateSelectedInput() {
         h2Header.textContent = selectedInput.value;
         const buttonHeader = document.createElement('button');
         buttonHeader.textContent = 'Create New Todo';
-        buttonHeader.addEventListener('click', () => showCreateTodoInput());
+        buttonHeader.addEventListener('click', () => showCreateAndEditTodoInput());
         divHeader.appendChild(h2Header);
         divHeader.appendChild(buttonHeader);
         todoSection.appendChild(divHeader);
@@ -76,6 +94,7 @@ function updateTodosDiv() {
     const projectInputsArray = Array.from(projectsInputs);
     const selectedInput = projectInputsArray.find(input => input.checked === true);
     const selectedProject = projectsList.find(project => project.projectName === selectedInput.value);
+    const selectedProjectIndex = projectsList.indexOf(selectedProject);
 
     todosDiv.innerHTML = '';
 
@@ -94,12 +113,18 @@ function updateTodosDiv() {
         descriptionP.textContent = todo.todoDescription;
         const completeButton = document.createElement('button');
         completeButton.textContent = 'Complete';
-        completeButton.addEventListener('click', () => todo.onComplete(index, 0));
+        completeButton.addEventListener('click', () => todo.onComplete(index, selectedProjectIndex));
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
+        editButton.addEventListener('click', () => {
+            projectIndex = selectedProjectIndex;
+            inputToEditindex = index;
+            isForEdit = true;
+            showCreateAndEditTodoInput();
+        });
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => todo.onDelete(index, 0));
+        deleteButton.addEventListener('click', () => todo.onDelete(index, selectedProjectIndex));
         
         todosDiv.appendChild(todoCard);
         todoCard.appendChild(h3);
