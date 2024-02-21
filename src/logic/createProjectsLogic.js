@@ -4,6 +4,15 @@ import { updateInputs, updateSelectedInput, updateTodosDiv } from "../display-co
 const projectsList = [];
 let inputToEdit = {};
 let inputChecked;
+const date = new Date();
+
+const onCreateNewTodo = (selectedProject, titleInput, descriptionInput) => {
+    const fullYear = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+
+    selectedProject.createTodo(titleInput.value, descriptionInput.value, fullYear, month, day);
+}
 
 const checkIfInputChecked = () => {
     const projectsInputs = document.querySelectorAll('input[name="project"]');
@@ -22,9 +31,16 @@ const checkIfEditedInputIsChecked = (index, name) => {
     };
 }
 
-function createNewTodo(title, description) {
-    const todoTitle = title;
-    const todoDescription = description;
+function createNewTodo({ 
+    titleInputValue, 
+    descriptionInputValue, 
+    fullYear,
+    month, 
+    day 
+}) {
+    const todoTitle = titleInputValue;
+    const todoDescription = descriptionInputValue;
+    const timeOfCreation = `Created at ${fullYear}-${month}-${day}`
     let completed = false;
 
     const onComplete = (index, projectIndex) => {
@@ -45,6 +61,7 @@ function createNewTodo(title, description) {
         todoTitle,
         todoDescription,
         completed,
+        timeOfCreation,
         onComplete,
         onEdit,
         onDelete
@@ -72,8 +89,8 @@ function createNewProject(name) {
         updateProjectsSection();
         inputChecked = null;
     }
-    const createTodo = () =>  {
-        todoProjectList.push(createNewTodo('Hola', 'Esto es una prueba'));
+    const createTodo = (titleInputValue, descriptionInputValue, fullYear, month, day) =>  {
+        todoProjectList.push(createNewTodo({ titleInputValue, descriptionInputValue, fullYear, month, day }));
         updateTodosDiv();
     };
     
@@ -95,7 +112,8 @@ function onCreateNewProject(name) {
 
 export { 
     projectsList, 
-    onCreateNewProject, 
+    onCreateNewProject,
+    onCreateNewTodo, 
     inputToEdit, 
     inputChecked 
 };
