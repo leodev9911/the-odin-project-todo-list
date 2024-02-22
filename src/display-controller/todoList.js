@@ -1,7 +1,6 @@
 import { 
     projectsList, 
     onCreateNewTodo,
-    isForEdit,
 } from "../logic/createProjectsLogic";
 
 const main = document.querySelector('main');
@@ -11,6 +10,7 @@ main.appendChild(todoSection);
 let projectsInputs = [];
 let projectIndex;
 let inputToEditindex;
+let isForEdit = false;
 
 function updateInputs() {
     projectsInputs = document.querySelectorAll('input[name="project"]');
@@ -44,8 +44,6 @@ const showCreateAndEditTodoInput = () => {
     
     if (isForEdit) {
         createOrEditNewTodoButton.addEventListener('click', () => {
-            console.log(titleinput.value);
-            console.log(descriptioninput.value);
             projectsList[projectIndex].todoProjectList[inputToEditindex].onEdit(projectIndex, inputToEditindex, titleinput.value, descriptioninput.value);
             isForEdit = false;
             todoListSection.removeChild(createTodoForm);
@@ -140,6 +138,7 @@ function updateTodosDiv() {
 
 export { 
     todoSection, 
+    isForEdit,
     updateInputs, 
     updateSelectedInput, 
     updateTodosDiv 
